@@ -45,17 +45,19 @@ import java.util.stream.Collectors;
 @Mod(AuthMod.MODID)
 public class AuthMod {
   public static final String MODID = "authmod";
+  public static final String CONFIG_FILE = String.format("%s-server.toml", MODID);
   static final String NAME = "AuthMod";
   static final String VERSION = "4.0";
   private static final String VERSION_URL = "https://raw.githubusercontent.com/Chocorean/authmod/master/VERSION";
   public static final Logger LOGGER = LogManager.getLogger(NAME);
   private Handler handler;
+  private CommandDispatcher dispatcher;
 
   public AuthMod() {
     final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     final ModLoadingContext modLoadingContext = ModLoadingContext.get();
-
     modLoadingContext.registerConfig(ModConfig.Type.SERVER, AuthModConfig.serverSpec);
+    AuthModConfig.load(FMLPaths.CONFIGDIR.get().resolve(CONFIG_FILE));
     MinecraftForge.EVENT_BUS.register(this);
   }
 
@@ -63,13 +65,13 @@ public class AuthMod {
   @SubscribeEvent
   public void onServerStarting(FMLServerStartingEvent event) {
     LOGGER.info("{} {}", NAME, VERSION);
+    AuthmodCommands.registerCommands(dispatcher);
   }
 
 
   @SubscribeEvent
   public void onCommandsRegister(RegisterCommandsEvent event) {
-    LOGGER.info("Register commands");
-    AuthmodCommands.registerCommands(event);
+    dispatcher = event.getDispatcher();
   }
 
 

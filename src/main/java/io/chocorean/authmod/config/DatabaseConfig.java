@@ -71,7 +71,6 @@ public class DatabaseConfig {
       .comment("Table to be used")
       .define("table","players");
 
-
     builder.pop();
   }
 }

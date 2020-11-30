@@ -1,5 +1,7 @@
 package io.chocorean.authmod.config;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import io.chocorean.authmod.AuthMod;
 import io.chocorean.authmod.command.ExceptionToMessageMapper;
 import io.chocorean.authmod.util.text.ServerLanguageMap;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -7,6 +9,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
+
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Arrays;
 
@@ -71,6 +75,13 @@ public class AuthModConfig {
     ServerLanguageMap.init(SERVER.language.get().name());
     ServerLanguageMap.replaceWith(SERVER.i18n.getTranslations());
     ExceptionToMessageMapper.init();
+  }
+
+  public static void load(Path config) {
+    CommentedFileConfig file = CommentedFileConfig.builder(config).build();
+    file.load();
+    AuthMod.LOGGER.info("Config is loaded");
+    serverSpec.setConfig(file);
   }
 
   @SubscribeEvent

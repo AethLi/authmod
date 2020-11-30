@@ -32,7 +32,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-@Mod.EventBusSubscriber
 public class Handler {
 
   private static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);

@@ -14,7 +14,7 @@ import io.chocorean.authmod.core.datasource.db.ConnectionFactory;
 import io.chocorean.authmod.core.datasource.db.ConnectionFactoryInterface;
 import io.chocorean.authmod.event.Handler;
 import net.minecraft.command.CommandSource;
-import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.Logger;
 
@@ -29,16 +29,17 @@ public class AuthmodCommands {
   public static final Logger LOGGER = AuthMod.LOGGER;
   private static Handler handler;
 
-  public static void registerCommands(RegisterCommandsEvent event) {
+  public static void registerCommands(CommandDispatcher<CommandSource> dispatcher) {
     if (AuthModConfig.SERVER.enableAuthmod()) {
       try {
         handler = new Handler();
+        //FMLJavaModLoadingContext.get().getModEventBus().register(handler);
         boolean identifierRequired = AuthModConfig.SERVER.identifierRequired.get();
         GuardInterface guard = createGuard(AuthModConfig.SERVER.dataSource.get(), identifierRequired);
         if(guard != null) {
-          registerLoginCommands(AuthModConfig.SERVER.enableLogin.get(), identifierRequired, event.getDispatcher() , guard);
-          registerRegisterCommand(AuthModConfig.SERVER.enableRegister.get(), identifierRequired, event.getDispatcher(), guard);
-          registerChangePasswordCommand(AuthModConfig.SERVER.enableRegister.get(), event.getDispatcher(), guard);
+          registerLoginCommands(AuthModConfig.SERVER.enableLogin.get(), identifierRequired, dispatcher , guard);
+          registerRegisterCommand(AuthModConfig.SERVER.enableRegister.get(), identifierRequired, dispatcher, guard);
+          registerChangePasswordCommand(AuthModConfig.SERVER.enableRegister.get(), dispatcher, guard);
         } else {
           LOGGER.warn("{} is disabled because guard is NULL", AuthMod.MODID);
         }
